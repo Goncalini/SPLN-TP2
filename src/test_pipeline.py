@@ -4,13 +4,13 @@ from nltk.corpus import stopwords
 from nltk.tokenize import word_tokenize
 
 # Import functions from other modules
-from retrievel import retrieve_collections
+from retrievel import retrieve_collections, get_collection
 from xml_to_json import xml_to_json, save_json
 from get_similarity import filter_collections_for_train, save_data_trained
 from model import upload_data_trained, train_modell, test_model, save_trained_model
 from search_engine import load_model, load_docss, get_embendiings, search_query_by_user, get_docss
 
-def setup_directories():
+def check_dirs():
     """Setup required directories."""
     #checkfoldr("datasets")
     checkfoldr(DATASET_DIR)
@@ -167,7 +167,7 @@ def main():
 
     print("All required NLTK resources are available. Starting")
     
-    setup_directories()
+    check_dirs()
     
     if not os.path.exists(JSON_FILE):
         print("Didnt found any data, retrieving data from repositorium")
@@ -194,7 +194,7 @@ def main():
         if response.lower() in ['yes', 'y']:
             interactive_search()
     
-    print("Exiting!")
+    print("---------Exiting!----------")
 
 if __name__ == "__main__":
     main()

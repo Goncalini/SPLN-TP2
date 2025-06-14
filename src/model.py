@@ -6,7 +6,7 @@ import json
 from parameters import *
 
 def upload_data_trained(path = TRAIN_FILE):
-    """Load training data from JSON file."""
+    """Load training data from JSON file"""
     print("Trained data loaded")
     
     train_data = load_json(path)
@@ -21,7 +21,7 @@ def upload_data_trained(path = TRAIN_FILE):
     return list
 
 def train_modell(trained_data, transformerr = BASE_MODEL):
-    """Train sentence transformer model."""
+    """Train sentence transformer model"""
     print(f"Training {transformerr} with new data from the collections retrieved")
     
     model = SentenceTransformer(transformerr)
@@ -66,35 +66,34 @@ def test_model(model, test_data):
     
     return metrics
 
-
-################################
+###############################
 ############# UTILS ###########
-################################
+###############################
 
 def checkfoldr(directory):
-    """Create directory if it doesn't exist."""
+    """Create directory if it doesn't exist"""
     if not os.path.exists(directory):
         os.makedirs(directory)
 
 def load_json(path) :
-    """Load data from JSON file."""
+    """Load data from JSON file"""
     with open(path, 'r', encoding='utf-8') as f:
         return json.load(f)
     
 def calc_loss(model):
-    """Calculate loss for training."""
+    """Calculate loss for training"""
     result = losses.CosineSimilarityLoss(model)
 
     return result
 
 def save_trained_model(model, model_path = MODEL_DIR):
-    """Save trained model."""
+    """Save trained model"""
     checkfoldr(model_path)
     model.save(model_path)
     print(f"Modelo guardado em: {model_path}")
 
 def load_trained_model(model_path = MODEL_DIR, transformerr = BASE_MODEL):
-    """Load trained model or base model."""
+    """Load trained model or base model"""
     if os.path.exists(model_path):
         model = SentenceTransformer(model_path)
         print(f"Using {model_path}")

@@ -3,9 +3,8 @@ import numpy as np
 from sentence_transformers import SentenceTransformer
 from parameters import *
 
-
 def get_embendiings(model, documents):
-    """Precompute document embeddings."""
+    """Precompute document embeddings"""
     print("Calculating results with embeddings")
     
     abstract = [doc['abstract'] for doc in documents]
@@ -16,7 +15,7 @@ def get_embendiings(model, documents):
     return doc_embeded
 
 def get_docss(query, model, documents, doc_embeded, top_k = 10):
-    """Retrieve documents for a query."""
+    """Retrieve documents for a query"""
     if not documents or doc_embeded is None:
         raise ValueError("Coleção não foi carregada")
     
@@ -33,7 +32,7 @@ def get_docss(query, model, documents, doc_embeded, top_k = 10):
     return res
 
 def fetch_results(query, model, documents, doc_embeded, top_k = 5):
-    """Search and display results."""
+    """Search and display results"""
     results = get_docss(query, model, documents, doc_embeded, top_k)
     
     print(f"-----------Results-----------")
@@ -49,7 +48,6 @@ def fetch_results(query, model, documents, doc_embeded, top_k = 5):
             print(f"KEYWORDS     - {', '.join(doc['keywords'][:5])}")
         
         print("-------------")
-
 
 def search_query_by_user(model, documents, doc_embeded):
     """Interactive search mode."""
@@ -67,10 +65,9 @@ def search_query_by_user(model, documents, doc_embeded):
         if query:
             fetch_results(query, model, documents, doc_embeded, top_k=5)
 
-
-###############################
-################# UTILS #######
-###############################
+##############################
+################# UTILS ######
+##############################
 
 def load_json(path):
     """Load data from JSON file."""
@@ -101,9 +98,8 @@ def load_docss(path = JSON_FILE):
 ################### MAIN ######
 ###############################
 
-
 def main():
-    """Main function for retrieval system."""
+    """Main function for retrieval system"""
     model = load_model()
     documents = load_docss()
     doc_embeded = get_embendiings(model, documents)

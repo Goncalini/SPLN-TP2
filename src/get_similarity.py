@@ -5,7 +5,6 @@ from nltk.corpus import stopwords
 from nltk.tokenize import word_tokenize
 from parameters import *
 
-
 def get_keyworrds(doc, frequency_kw):
     """Get filtered keywords for a document."""
     keywords = set()
@@ -86,7 +85,6 @@ def keyword_freq(documents):
     
     doc_count = len(documents)
 
-
     keyword_count = Counter()
     for doc in documents:
         keywordss = extract_keywords(doc.get('abstract', ''))
@@ -100,7 +98,6 @@ def keyword_freq(documents):
         for keyword in total_keywords:
             keyword_count[keyword] += 1
    
-    
     frequency_kw = dict(map(lambda item: (item[0], item[1] / doc_count), keyword_count.items()))
     
     length_f = len(frequency_kw)
@@ -118,7 +115,6 @@ def lists_similarity(s1, s2):
     if not s1 or not s2:
         return 0.0
     
-   
     for s in s1:
         set1.add(s.lower())
 
@@ -177,8 +173,6 @@ def calc_similiraty(doc1, doc2, frequency_kw):
     return normalize_score(total_sim)
     
 
-
-
 #############################
 ########### UTILS ###########
 #############################
@@ -200,7 +194,7 @@ def load_json(path):
         return json.load(f)
     
 def save_data_trained(pairs, path = TRAIN_FILE):
-    """Save training data to JSON file."""
+    """Save training data to JSON file"""
     train_data = [
         {
             'text1': pair[0],
@@ -214,7 +208,7 @@ def save_data_trained(pairs, path = TRAIN_FILE):
     print(f"Trained data saved at {path}")
 
 def extract_keywords(text, language = 'portuguese'):
-    """Extract keywords from text."""
+    """Extract keywords from text"""
     if not text:
         return []
     
@@ -233,7 +227,7 @@ def extract_keywords(text, language = 'portuguese'):
     return keywords
 
 def calculate_jaccard_similarity(set1, set2):
-    """Calculate Jaccard similarity between two sets."""
+    """Calculate Jaccard similarity between two sets"""
     if not set1 and not set2:
         return 1.0
     if not set1 or not set2:
@@ -247,8 +241,6 @@ def calculate_jaccard_similarity(set1, set2):
 def normalize_score(score, min_val = 0.0, max_val = 1.0):
     """Normalize score to specified range."""
     return max(min_val, min(max_val, score))
-
-
 
 
 ###################################
@@ -278,7 +270,6 @@ def main():
     pairs = filter_collections_for_train(documents)
     save_data_trained(pairs)
     
-
     print("-----------STATISTICS------------")
 
     if pairs:
@@ -287,8 +278,8 @@ def main():
         print(f"  Mean similarity       -    {np.mean(sim):.2f}")
         print(f"  Median similarity     -    {np.median(sim):.2f}")
         print(f"  Std deviation         -    {np.std(sim):.2f}")
-        print(f"  Minimum similarity    -    {np.min(sim):.2f}")
         print(f"  Maximum similarity    -    {np.max(sim):.2f}")
+        print(f"  Minimum similarity    -    {np.min(sim):.2f}")
     else:
         print("Nothing to display.")
 

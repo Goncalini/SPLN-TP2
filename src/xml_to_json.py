@@ -2,9 +2,8 @@ import re, os, json, unicodedata
 import xml.etree.ElementTree as ET
 from parameters import *
 
-
 def get_info(metadata, element, namespaces, qualifier = None):
-    """Extract a single field from metadata."""
+    """Extract a single field from metadata"""
     prefix = f".//dim:field[@element='{element}']"
     if qualifier:
         prefix += f"[@qualifier='{qualifier}']"
@@ -17,7 +16,7 @@ def get_info(metadata, element, namespaces, qualifier = None):
         return ""
 
 def get_info2(metadata, element, namespaces, qualifier = None):
-    """Extract multiple fields from metadata."""
+    """Extract multiple fields from metadata"""
     prefix = f".//dim:field[@element='{element}']"
     if qualifier:
         prefix += f"[@qualifier='{qualifier}']"
@@ -30,7 +29,7 @@ def get_info2(metadata, element, namespaces, qualifier = None):
     return result
 
 def get_idd(record, namespaces):
-    """Extract identifier from record."""
+    """Extract identifier from record"""
     header = record.find('.//oai:header', namespaces)
     if header is not None:
         idd = header.find('oai:identifier', namespaces)
@@ -120,7 +119,6 @@ def arrange_data(fille):
     
     return fille
 
-
 #################################
 ################# UTILS #########
 #################################
@@ -178,11 +176,9 @@ def normalize_data(date):
     else:
         return date
 
-
 ##############################
 ################  MAIN #######
 ##############################
-
 
 def main():
     """Main function for data processing."""

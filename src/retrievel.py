@@ -2,9 +2,8 @@ import requests, time, os, random
 import xml.etree.ElementTree as ET
 from parameters import *
 
-
 def get_collection(c_id, max_records, url, session):
-    """Extract data from a single collection."""
+    """Extract data from a single collection"""
 
     collection_records = ""
     resumption_token = None
@@ -97,7 +96,7 @@ def get_collection(c_id, max_records, url, session):
 
 
 def retrieve_collections(collections, max_records = RECORDS_NUMBER, url = REPOSITORIUM_URL):
-    """Extract data from multiple collections."""
+    """Extract data from multiple collections"""
     print(f"Extracting {max_records} records from collections: {list(collections.keys())}")
     print("----------------------")
     estates_dic = {}
