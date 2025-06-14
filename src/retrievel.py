@@ -2,7 +2,7 @@ import requests, time, os, random
 import xml.etree.ElementTree as ET
 from parameters import *
 
-def retrieve_collections(collections, max_records = MAX_RECORDS, url = REPOSITORIUM_BASE_URL):
+def retrieve_collections(collections, max_records = RECORDS_NUMBER, url = REPOSITORIUM_URL):
     """Extract data from multiple collections."""
     print(f"Extracting {max_records} records from collections: {list(collections.keys())}")
     print("----------------------")
@@ -92,7 +92,7 @@ def get_collection(c_id, max_records, url, session):
                     print(f"Trying {trial + 1}")
                     time.sleep(delay)
                 
-                response = session.get(url, params=params, timeout=EXTRACTION_TIMEOUT)
+                response = session.get(url, params=params, timeout=TIMEOUT)
                 response.raise_for_status()
                 response_xml = response.text
                 bool = True
@@ -105,7 +105,7 @@ def get_collection(c_id, max_records, url, session):
                     fails_counter += 1
 
         if not bool:
-            if fails_counter >= MAX_CONSECUTIVE_ERRORS:
+            if fails_counter >= MAX_ERRORS:
                 print("Aborting retrieval")
                 break
             else:
@@ -136,7 +136,7 @@ def get_collection(c_id, max_records, url, session):
             if rt_elem is not None and rt_elem.text:
                 resumption_token = rt_elem.text.strip()
                 
-                delay = BASE_DELAY + random.uniform(0, 0.5)
+                delay = DELAY + random.uniform(0, 0.5)
                 time.sleep(delay)
             else:
                 print(f" End of records.")
@@ -145,7 +145,7 @@ def get_collection(c_id, max_records, url, session):
         except ET.ParseError as e:
             print(f"Error parsing XML: {e}")
             fails_counter += 1
-            if fails_counter >= MAX_CONSECUTIVE_ERRORS:
+            if fails_counter >= MAX_ERRORS:
                 break
             continue
 
@@ -182,7 +182,7 @@ def checkfoldr(directory):
 
 def main():
     """Main function for data extraction."""
-    xml_data = retrieve_collections(COLLECTIONS, max_records=MAX_RECORDS)
+    xml_data = retrieve_collections(COLLECTIONS, max_records=RECORDS_NUMBER)
     #save_xml_data(xml_data)
     
     path = XML_FILE

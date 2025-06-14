@@ -12,7 +12,8 @@ from search_engine import load_model, load_docss, get_embendiings, search_query_
 
 def setup_directories():
     """Setup required directories."""
-    checkfoldr(DATA_DIR)
+    #checkfoldr("datasets")
+    checkfoldr(DATASET_DIR)
     checkfoldr(MODEL_DIR)
 
 def first_script():
@@ -21,17 +22,17 @@ def first_script():
     print("Script retrievel.py")
     print("----------------------------------------")
     
-    xml_data = retrieve_collections(COLLECTIONS, max_records=MAX_RECORDS)
+    xml_data = retrieve_collections(COLLECTIONS, max_records=RECORDS_NUMBER)
     #save_xml_data(xml_data)
 
-    filepath = XML_FILE
+    path = XML_FILE
 
-    checkfoldr(os.path.dirname(filepath))
+    checkfoldr(os.path.dirname(path))
     
-    with open(filepath, 'w', encoding='utf-8') as f:
+    with open(path, 'w', encoding='utf-8') as f:
         f.write(xml_data)
         
-    print(f"\n📂 Records saved at {filepath}")
+    print(f"\n📂 Records saved at {path}")
     
     return xml_data
 

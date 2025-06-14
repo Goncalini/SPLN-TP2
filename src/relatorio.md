@@ -106,9 +106,9 @@ O modelo pode ser afinado com exemplos supervisionados:
 Parâmetros usados:
 
 ```python
-TRAIN_EPOCHS = 5
-BATCH_SIZE_TRAIN = 16
-SIMILARITY_THRESHOLD = 0.3
+EPOCHS = 5
+BATCH = 16
+THRESHOLD_SIMILARITY = 0.3
 ```
 
 É importante destacar que, durante os testes preliminares, os modelos `all-MiniLM-L6-v2` e `distiluse-base-multilingual-cased-v2` demonstraram desempenho superior em termos de qualidade das similaridades geradas, especialmente quando combinados com batch sizes maiores e valores elevados para o número de documentos recuperados por consulta. No entanto, tendo em conta as limitações computacionais dos equipamentos utilizados pelos membros do grupo, n optou-se por adotar o modelo `paraphrase-multilingual-MiniLM-L12-v2`. Este modelo oferece um bom compromisso entre desempenho e eficiência computacional, permitindo treinos com batch size 16 e 5 épocas, alcançando resultados satisfatórios dentro dos recursos disponíveis.

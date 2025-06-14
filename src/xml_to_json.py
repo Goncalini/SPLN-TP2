@@ -128,7 +128,7 @@ def normalize_data(date):
     else:
         return date
 
-def is_valid_doc(fille, min = MIN_ABSTRACT_LENGTH, max = MAX_ABSTRACT_LENGTH):
+def is_valid_doc(fille, min = MIN_ABST, max = MAX_ABST):
     """Check if document is valid for processing."""
     if not fille.get('title'):
         return False

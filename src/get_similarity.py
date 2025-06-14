@@ -23,7 +23,7 @@ def filter_collections_for_train(documents):
         for _, doc2 in enumerate(documents[i+1:], i+1):
             sim = calc_similiraty(doc1, doc2, frequency_kw)
             
-            if sim >= SIMILARITY_THRESHOLD:
+            if sim >= THRESHOLD_SIMILARITY:
                 pairs.append((doc1['abstract'], doc2['abstract'], sim))
                 #print("appended...............")
             counte += 1

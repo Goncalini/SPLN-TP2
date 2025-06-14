@@ -26,13 +26,13 @@ def train_modell(trained_data, transformerr = BASE_MODEL):
     
     model = SentenceTransformer(transformerr)
     
-    load_training = DataLoader(trained_data, shuffle=True, batch_size=BATCH_SIZE_TRAIN)
+    load_training = DataLoader(trained_data, shuffle=True, batch_size=BATCH)
     
     lost_value = calc_loss(model)
     
-    print(f"TRAINING EPOCHS: {TRAIN_EPOCHS}, BATCH SIZE: {BATCH_SIZE_TRAIN}")
+    print(f"TRAINING EPOCHS: {EPOCHS}, BATCH SIZE: {BATCH}")
     
-    model.fit(train_objectives=[(load_training, lost_value)], epochs=TRAIN_EPOCHS, warmup_steps=int(len(load_training) * 0.1), output_path=MODEL_DIR, show_progress_bar=True)
+    model.fit(train_objectives=[(load_training, lost_value)], epochs=EPOCHS, warmup_steps=int(len(load_training) * 0.1), output_path=MODEL_DIR, show_progress_bar=True)
     
     print("Concluced training!")
     return model
