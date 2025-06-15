@@ -28,7 +28,7 @@ MAX_ERRORS = 10
 XML_FILE = "./dataset/initial_extract.xml"
 JSON_FILE = "./dataset/result.json"
 TRAIN_FILE = "./dataset/similarities.json"
-MODEL_DIR = "models"
+MODEL_DIR = "trainedmodel"
 DATASET_DIR = "dataset"
 
 print("--------Loaded parameters------------")
