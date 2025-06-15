@@ -2,62 +2,6 @@ import requests, time, os, random
 import xml.etree.ElementTree as ET
 from parameters import *
 
-def retrieve_collections(collections, max_records = RECORDS_NUMBER, url = REPOSITORIUM_URL):
-    """Extract data from multiple collections."""
-    print(f"Extracting {max_records} records from collections: {list(collections.keys())}")
-    print("----------------------")
-    estates_dic = {}
-    final_content = '<?xml version="1.0" encoding="UTF-8"?>\n<collection>\n'
-
-    session = requests.Session()
-    session.headers.update({
-        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'
-    })
-
-    
-
-    records_fetched = 0
-    for name, c_id in collections.items():
-        if records_fetched >= max_records:
-            print(f"{max_records} were retrieved successfully.")
-            break
-            
-        records_aux = max_records - records_fetched # Calculate remaining records to fetch
-        print(f"Getting {records_aux} from collection: {name} ({c_id})")
-        print("----------------------")
-        
-        try:
-            collection_xml, all_records = get_collection(c_id, records_aux, url, session)
-            if all_records > 0:
-                #collecion_records = read(collection_xml)
-                collection_records = collection_xml
-                final_content = final_content + collection_records
-                records_fetched = records_fetched + all_records
-                estates_dic[name] = all_records
-                
-                print(f"Successfully extracted {all_records} records from '{name}'.")
-                print(f"Fetched {records_fetched} out of {max_records} records extracted so far.")
-                
-                if records_fetched >= max_records:
-                    print(f"Total of {max_records} records reached. Stopping extraction.")
-            else:
-                print(f"Nothing found {name}")
-                estates_dic[name] = 0
-                
-        except Exception as e:
-            print(f"Error {e}")
-            estates_dic[name] = 0
-            continue
-
-    final_content += '</collection>'
-    
-    print("\n")
-    print("---------------------------------------------")
-
-    for name, i in estates_dic.items():
-        print(f"{name}: {i}")
-    
-    return final_content
 
 def get_collection(c_id, max_records, url, session):
     """Extract data from a single collection."""
@@ -151,20 +95,62 @@ def get_collection(c_id, max_records, url, session):
 
     return collection_records, n_records
 
-"""
-def read_xml(final_content):
-    ## Extract records from XML content
-    return final_content
 
-def save_xml_data(final_content, path = XML_FILE):
-    #Save XML content to file
-    checkfoldr(os.path.dirname(path))
+def retrieve_collections(collections, max_records = RECORDS_NUMBER, url = REPOSITORIUM_URL):
+    """Extract data from multiple collections."""
+    print(f"Extracting {max_records} records from collections: {list(collections.keys())}")
+    print("----------------------")
+    estates_dic = {}
+    final_content = '<?xml version="1.0" encoding="UTF-8"?>\n<collection>\n'
+
+    session = requests.Session()
+    session.headers.update({
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'
+    })
+
     
-    with open(path, 'w', encoding='utf-8') as f:
-        f.write(final_content)
+
+    records_fetched = 0
+    for name, c_id in collections.items():
+        if records_fetched >= max_records:
+            print(f"{max_records} were retrieved successfully.")
+            break
+            
+        records_aux = max_records - records_fetched # Calculate remaining records to fetch
+        print(f"Getting {records_aux} from collection: {name} ({c_id})")
+        print("----------------------")
         
-    print(f"\n📂 Records saved at {path}")
-"""
+        try:
+            collection_xml, all_records = get_collection(c_id, records_aux, url, session)
+            if all_records > 0:
+                collection_records = collection_xml
+                final_content = final_content + collection_records
+                records_fetched = records_fetched + all_records
+                estates_dic[name] = all_records
+                
+                print(f"Successfully extracted {all_records} records from '{name}'.")
+                print(f"Fetched {records_fetched} out of {max_records} records extracted so far.")
+                
+                if records_fetched >= max_records:
+                    print(f"Total of {max_records} records reached. Stopping extraction.")
+            else:
+                print(f"Nothing found {name}")
+                estates_dic[name] = 0
+                
+        except Exception as e:
+            print(f"Error {e}")
+            estates_dic[name] = 0
+            continue
+
+    final_content += '</collection>'
+    
+    print("\n")
+    print("---------------------------------------------")
+
+    for name, i in estates_dic.items():
+        print(f"{name}: {i}")
+    
+    return final_content
 
 ################################################
 ################################ UTILS #########

@@ -75,6 +75,7 @@ docs/_build/
 
 # PyBuilder
 .pybuilder/
+checkpoints/
 target/
 
 # Jupyter Notebook
@@ -82,6 +83,7 @@ target/
 
 # IPython
 profile_default/
+models/
 ipython_config.py
 
 # pyenv

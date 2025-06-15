@@ -2,6 +2,42 @@ import re, os, json, unicodedata
 import xml.etree.ElementTree as ET
 from parameters import *
 
+
+def get_info(metadata, element, namespaces, qualifier = None):
+    """Extract a single field from metadata."""
+    prefix = f".//dim:field[@element='{element}']"
+    if qualifier:
+        prefix += f"[@qualifier='{qualifier}']"
+    
+    field = metadata.find(prefix, namespaces)
+    #return field.text if field is not None and field.text else ""
+    if field is not None and field.text:
+        return field.text
+    else:
+        return ""
+
+def get_info2(metadata, element, namespaces, qualifier = None):
+    """Extract multiple fields from metadata."""
+    prefix = f".//dim:field[@element='{element}']"
+    if qualifier:
+        prefix += f"[@qualifier='{qualifier}']"
+    
+    fields = metadata.findall(prefix, namespaces)
+    result = []
+    for field in fields:
+        if field.text:
+            result.append(field.text)
+    return result
+
+def get_idd(record, namespaces):
+    """Extract identifier from record."""
+    header = record.find('.//oai:header', namespaces)
+    if header is not None:
+        idd = header.find('oai:identifier', namespaces)
+        if idd is not None:
+            return idd.text if idd.text else ""
+    return ""
+
 def xml_to_json(xml_path = XML_FILE):
     """Convert XML data to JSON format."""
     print("Converting XML file into JSON file")
@@ -45,6 +81,7 @@ def read_xml2(record, namespaces):
             return None
         
         fille = {
+
             'id': get_idd(record, namespaces),
             'title': get_info(metadata, 'title', namespaces),
             'abstract': get_info(metadata, 'description', namespaces, 'abstract'),
@@ -66,42 +103,6 @@ def read_xml2(record, namespaces):
         print(f"Error {e}")
         return None
 
-def get_idd(record, namespaces):
-    """Extract identifier from record."""
-    header = record.find('.//oai:header', namespaces)
-    if header is not None:
-        idd = header.find('oai:identifier', namespaces)
-        if idd is not None:
-            return idd.text if idd.text else ""
-    return ""
-
-def get_info(metadata, element, namespaces, qualifier = None):
-    """Extract a single field from metadata."""
-    prefix = f".//dim:field[@element='{element}']"
-    if qualifier:
-        prefix += f"[@qualifier='{qualifier}']"
-    
-    field = metadata.find(prefix, namespaces)
-    #return field.text if field is not None and field.text else ""
-    if field is not None and field.text:
-        return field.text
-    else:
-        return ""
-
-def get_info2(metadata, element, namespaces, qualifier = None):
-    """Extract multiple fields from metadata."""
-    prefix = f".//dim:field[@element='{element}']"
-    if qualifier:
-        prefix += f"[@qualifier='{qualifier}']"
-    
-    fields = metadata.findall(prefix, namespaces)
-    #result = [field.text for field in fields if field.text]
-    result = []
-    for field in fields:
-        if field.text:
-            result.append(field.text)
-    return result
-
 def arrange_data(fille):
     """Clean document data."""
     camps = ['title', 'abstract']
@@ -119,40 +120,6 @@ def arrange_data(fille):
     
     return fille
 
-def normalize_data(date):
-    """Normalize date string to extract year."""
-    match = re.search(r'\b(19|20)\d{2}\b', date)
-    #return match.group() if match else date
-    if match:
-        return match.group()
-    else:
-        return date
-
-def is_valid_doc(fille, min = MIN_ABST, max = MAX_ABST):
-    """Check if document is valid for processing."""
-    if not fille.get('title'):
-        return False
-    
-    if not fille.get('abstract'):
-        return False
-    
-    lenght = len(fille['title'])
-
-    if lenght < min:
-        return False
-    
-    if lenght > max:
-        return False
-    
-    return True
-
-"""
-
-def save_data(documents, path = JSON_FILE):
-    #Save collection to JSON file.
-    save_json(documents, path)
-    print(f"Saved at {path}")
-"""
 
 #################################
 ################# UTILS #########
@@ -173,6 +140,24 @@ def load_json(path):
     """Load data from JSON file."""
     with open(path, 'r', encoding='utf-8') as f:
         return json.load(f)
+    
+def is_valid_doc(fille, min = MIN_ABST, max = MAX_ABST):
+    """Check if document is valid for processing."""
+    if not fille.get('title'):
+        return False
+    
+    if not fille.get('abstract'):
+        return False
+    
+    lenght = len(fille['title'])
+
+    if lenght < min:
+        return False
+    
+    if lenght > max:
+        return False
+    
+    return True
 
 def clean_text(text):
     """Clean and normalize text."""
@@ -185,6 +170,13 @@ def clean_text(text):
     
     return text
 
+def normalize_data(date):
+    """Normalize date string to extract year."""
+    match = re.search(r'\b(19|20)\d{2}\b', date)
+    if match:
+        return match.group()
+    else:
+        return date
 
 
 ##############################

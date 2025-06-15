@@ -6,6 +6,24 @@ from nltk.tokenize import word_tokenize
 from parameters import *
 
 
+def get_keyworrds(doc, frequency_kw):
+    """Get filtered keywords for a document."""
+    keywords = set()
+    
+    keywordss = extract_keywords(doc.get('abstract', ''))
+    keywords.update(keywordss)
+    
+    keyword_camp = [kw.lower() for kw in doc.get('keywords', [])]
+    keywords.update(keyword_camp)
+    
+    filtered_keywords = set()
+    for kw in keywords:
+        freq = frequency_kw.get(kw, 0)
+        if freq > 0.01 and freq < 0.5:
+            filtered_keywords.add(kw)
+    
+    return filtered_keywords
+
 def filter_collections_for_train(documents):
     """Create training collection from documents."""
     print("Filtering collections for training")
@@ -34,67 +52,6 @@ def filter_collections_for_train(documents):
     print(f"Completed similarity calculations for {len(pairs)} pairs")
     return pairs
 
-def keyword_freq(documents):
-    """Calculate keyword frequencies across documents."""
-    print("Searching Keyword frequency")
-    
-    doc_count = len(documents)
-
-
-    keyword_count = Counter()
-    for doc in documents:
-        keywordss = extract_keywords(doc.get('abstract', ''))
-       #keyword_camp = [kw.lower() for kw in doc.get('keywords', [])]
-
-        keyword_camp = []
-        for kw in doc.get('keywords', []):
-            keyword_camp.append(kw.lower())
-        
-        #total_keywords = set(keywordss + keyword_camp)
-        total_keywords = set(keywordss).union(keyword_camp)
-        
-        for keyword in total_keywords:
-            keyword_count[keyword] += 1
-    """"
-    frequency_kw = {
-        keyword: count / doc_count 
-        for keyword, count in keyword_count.items()
-    }
-    """
-
-    frequency_kw = dict(map(lambda item: (item[0], item[1] / doc_count), keyword_count.items()))
-    
-    length_f = len(frequency_kw)
-
-    print(f"Frequency - {length_f} keywords found")
-    return frequency_kw
-
-def calc_similiraty(doc1, doc2, frequency_kw):
-    """Calculate similarity between two documents."""
-    sim = []
-    
-    # Keyword similarity (weighted 0.4)
-    keyword_sim = calc_keyword_similarity(doc1, doc2, frequency_kw)
-    sim.append(keyword_sim * 0.45)
-
-    # UDC subjects similarity (weighted 0.3)
-    udc_sim = lists_similarity(doc1.get('subjects_udc', []), doc2.get('subjects_udc', []))
-    sim.append(udc_sim * 0.25)
-
-    # FOS subjects similarity (weighted 0.2)
-    fos_sim = lists_similarity(doc1.get('subjects_fos', []), doc2.get('subjects_fos', []))
-    sim.append(fos_sim * 0.2)
-
-    # Collection similarity (weighted 0.1)
-    collection_sim = get_col_sim(doc1, doc2)
-    sim.append(collection_sim * 0.1)
-
-    # Sum weighted similarities
-    total_sim = sum(sim)
-
-    # Normalize and return
-    return normalize_score(total_sim)
-    
 def calc_keyword_similarity(doc1, doc2, frequency_kw):
     """Calculate keyword similarity between documents."""
     keywords_doc1 = get_keyworrds(doc1, frequency_kw)
@@ -123,30 +80,34 @@ def calc_keyword_similarity(doc1, doc2, frequency_kw):
 
     return res
 
-def get_keyworrds(doc, frequency_kw):
-    """Get filtered keywords for a document."""
-    keywords = set()
+def keyword_freq(documents):
+    """Calculate keyword frequencies across documents."""
+    print("Searching Keyword frequency")
     
-    keywordss = extract_keywords(doc.get('abstract', ''))
-    keywords.update(keywordss)
+    doc_count = len(documents)
+
+
+    keyword_count = Counter()
+    for doc in documents:
+        keywordss = extract_keywords(doc.get('abstract', ''))
+       
+        keyword_camp = []
+        for kw in doc.get('keywords', []):
+            keyword_camp.append(kw.lower())
+        
+        total_keywords = set(keywordss).union(keyword_camp)
+        
+        for keyword in total_keywords:
+            keyword_count[keyword] += 1
+   
     
-    keyword_camp = [kw.lower() for kw in doc.get('keywords', [])]
-    keywords.update(keyword_camp)
+    frequency_kw = dict(map(lambda item: (item[0], item[1] / doc_count), keyword_count.items()))
     
-    """
-    filtered_keywords = {
-        kw for kw in keywords 
-        if frequency_kw.get(kw, 0) > 0.01 and 
-           frequency_kw.get(kw, 1) < 0.5
-    }
-    """
-    filtered_keywords = set()
-    for kw in keywords:
-        freq = frequency_kw.get(kw, 0)
-        if freq > 0.01 and freq < 0.5:
-            filtered_keywords.add(kw)
-    
-    return filtered_keywords
+    length_f = len(frequency_kw)
+
+    print(f"Frequency - {length_f} keywords found")
+    return frequency_kw
+
 
 def lists_similarity(s1, s2):
     """Calculate similarity between subject lists."""
@@ -157,12 +118,7 @@ def lists_similarity(s1, s2):
     if not s1 or not s2:
         return 0.0
     
-    """"
-    set1 = set(s.lower() for s in s1)
-    set2 = set(s.lower() for s in s2)
-    """
-
-
+   
     for s in s1:
         set1.add(s.lower())
 
@@ -190,29 +146,36 @@ def get_col_sim(doc1, doc2):
     for c in col2:
         set2.add(c.lower())
     
-    """
-    set1 = set(c.lower() for c in col1)
-    set2 = set(c.lower() for c in col2)
-    """
-
     res = calculate_jaccard_similarity(set1, set2)
 
     return res
 
-def save_data_trained(pairs, path = TRAIN_FILE):
-    """Save training data to JSON file."""
-    train_data = [
-        {
-            'text1': pair[0],
-            'text2': pair[1],
-            'similarity': pair[2]
-        }
-        for pair in pairs
-    ]
+def calc_similiraty(doc1, doc2, frequency_kw):
+    """Calculate similarity between two documents."""
+    sim = []
     
-    save_json(train_data, path)
-    print(f"Trained data saved at {path}")
+    # Keyword similarity (weighted 0.4)
+    keyword_sim = calc_keyword_similarity(doc1, doc2, frequency_kw)
+    sim.append(keyword_sim * 0.45)
 
+    # UDC subjects similarity (weighted 0.3)
+    udc_sim = lists_similarity(doc1.get('subjects_udc', []), doc2.get('subjects_udc', []))
+    sim.append(udc_sim * 0.25)
+
+    # FOS subjects similarity (weighted 0.2)
+    fos_sim = lists_similarity(doc1.get('subjects_fos', []), doc2.get('subjects_fos', []))
+    sim.append(fos_sim * 0.2)
+
+    # Collection similarity (weighted 0.1)
+    collection_sim = get_col_sim(doc1, doc2)
+    sim.append(collection_sim * 0.1)
+
+    # Sum weighted similarities
+    total_sim = sum(sim)
+
+    # Normalize and return
+    return normalize_score(total_sim)
+    
 
 
 
@@ -235,6 +198,20 @@ def load_json(path):
     """Load data from JSON file."""
     with open(path, 'r', encoding='utf-8') as f:
         return json.load(f)
+    
+def save_data_trained(pairs, path = TRAIN_FILE):
+    """Save training data to JSON file."""
+    train_data = [
+        {
+            'text1': pair[0],
+            'text2': pair[1],
+            'similarity': pair[2]
+        }
+        for pair in pairs
+    ]
+    
+    save_json(train_data, path)
+    print(f"Trained data saved at {path}")
 
 def extract_keywords(text, language = 'portuguese'):
     """Extract keywords from text."""
@@ -270,6 +247,7 @@ def calculate_jaccard_similarity(set1, set2):
 def normalize_score(score, min_val = 0.0, max_val = 1.0):
     """Normalize score to specified range."""
     return max(min_val, min(max_val, score))
+
 
 
 

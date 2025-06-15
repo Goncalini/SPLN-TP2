@@ -23,7 +23,6 @@ def first_script():
     print("----------------------------------------")
     
     xml_data = retrieve_collections(COLLECTIONS, max_records=RECORDS_NUMBER)
-    #save_xml_data(xml_data)
 
     path = XML_FILE
 
@@ -32,7 +31,7 @@ def first_script():
     with open(path, 'w', encoding='utf-8') as f:
         f.write(xml_data)
         
-    print(f"\n📂 Records saved at {path}")
+    print(f"Records saved at {path}")
     
     return xml_data
 
@@ -54,10 +53,10 @@ def third_script(documents):
     print("Script get_similarities.py")
     print("----------------------------------------")
     
-    training_pairs = filter_collections_for_train(documents)
-    save_data_trained(training_pairs)
+    pars_train = filter_collections_for_train(documents)
+    save_data_trained(pars_train)
     
-    return training_pairs
+    return pars_train
 
 def forth_script():
     """Train the sentence transformer model."""
@@ -65,23 +64,23 @@ def forth_script():
     print("Script model.py")
     print("----------------------------------------")
     
-    training_examples = upload_data_trained()
+    data_trainx = upload_data_trained()
     
-    if training_examples:
-        split_idx = int(0.8 * len(training_examples))
-        train_examples = training_examples[:split_idx]
-        test_examples = training_examples[split_idx:]
+    if data_trainx:
+        split_idx = int(0.8 * len(data_trainx)) #Calcula 80% do tamanho da lista data_trainx e armazena esse valor como um índice inteiro.
+        trained_ex = data_trainx[:split_idx]
+        text_ex = data_trainx[split_idx:]
         
-        model = train_modell(train_examples)
+        model = train_modell(trained_ex)
         
-        if test_examples:
-            test_model(model, test_examples)
+        if text_ex:
+            test_model(model, text_ex)
         
         save_trained_model(model)
         
         return model
     else:
-        print("Nenhum dado de treino disponível!")
+        print("No model found")
         return None
 
 def final_script():
@@ -103,7 +102,7 @@ def final_script():
     ]
     
     for query in test_queries:
-        print(f"\nTeste com query: '{query}'")
+        print(f"Teste com query: '{query}'")
         results = get_docss(query, model, documents, document_embeddings, top_k=3)
         
         for i, (doc, score) in enumerate(results, 1):
@@ -189,7 +188,7 @@ def main():
     
     if os.path.exists(JSON_FILE):
         final_script()
-        
+        #print("Chegouuu")
         print("\n")
         response = input("Do you wish to test your own queries (y/n): ")
         if response.lower() in ['yes', 'y']:

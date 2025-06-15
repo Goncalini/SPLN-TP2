@@ -32,14 +32,6 @@ def get_docss(query, model, documents, doc_embeded, top_k = 10):
     
     return res
 
-"""
-def calculate_similarities(embbeded_query, doc_embeded):
-    #Calculate similarities between query and documents#
-    similarities = np.dot(doc_embeded, embbeded_query) / (np.linalg.norm(doc_embeded, axis=1) * np.linalg.norm(embbeded_query))
-    
-    return similarities
-"""
-
 def fetch_results(query, model, documents, doc_embeded, top_k = 5):
     """Search and display results."""
     results = get_docss(query, model, documents, doc_embeded, top_k)
@@ -58,46 +50,6 @@ def fetch_results(query, model, documents, doc_embeded, top_k = 5):
         
         print("-------------")
 
-"""
-def evaluate_retrieval_system(test_queries, model, documents, doc_embeded):
-    # Evaluate retrieval system.
-    print("A avaliar sistema de retrieval...")
-    
-    precisions = []
-    recalls = []
-    
-    for query_data in test_queries:
-        query = query_data['query']
-        relevant_docs = set(query_data['relevant_docs'])
-        
-        results = get_docss(query, model, documents, doc_embeded, top_k=20)
-        retrieved_docs = {doc['id'] for doc, _ in results}
-        
-        if retrieved_docs:
-            precision = len(relevant_docs.intersection(retrieved_docs)) / len(retrieved_docs)
-            precisions.append(precision)
-        
-        if relevant_docs:
-            recall = len(relevant_docs.intersection(retrieved_docs)) / len(relevant_docs)
-            recalls.append(recall)
-    
-    avg_precision = np.mean(precisions) if precisions else 0.0
-    avg_recall = np.mean(recalls) if recalls else 0.0
-    f1_score = 2 * avg_precision * avg_recall / (avg_precision + avg_recall) if (avg_precision + avg_recall) > 0 else 0.0
-    
-    metrics = {
-        'precision': avg_precision,
-        'recall': avg_recall,
-        'f1_score': f1_score
-    }
-    
-    print("Retrieval Metrics:")
-    print(f"  Precision - {metrics['precision']:.4f}")
-    print(f"  Recall    - {metrics['recall']:.4f}")
-    print(f"  F1-Score  - {metrics['f1_score']:.4f}")
-    
-    return metrics
-"""
 
 def search_query_by_user(model, documents, doc_embeded):
     """Interactive search mode."""
@@ -170,3 +122,56 @@ def main():
 
 if __name__ == "__main__":
     main()
+
+
+
+
+
+
+
+
+
+
+
+
+
+"""
+def evaluate_retrieval_system(test_queries, model, documents, doc_embeded):
+    # Evaluate retrieval system.
+    print("Evaluating")
+    
+    precisions = []
+    recalls = []
+    
+    for query_data in test_queries:
+        query = query_data['query']
+        relevant_docs = set(query_data['relevant_docs'])
+        
+        results = get_docss(query, model, documents, doc_embeded, top_k=20)
+        retrieved_docs = {doc['id'] for doc, _ in results}
+        
+        if retrieved_docs:
+            precision = len(relevant_docs.intersection(retrieved_docs)) / len(retrieved_docs)
+            precisions.append(precision)
+        
+        if relevant_docs:
+            recall = len(relevant_docs.intersection(retrieved_docs)) / len(relevant_docs)
+            recalls.append(recall)
+    
+    avg_precision = np.mean(precisions) if precisions else 0.0
+    avg_recall = np.mean(recalls) if recalls else 0.0
+    f1_score = 2 * avg_precision * avg_recall / (avg_precision + avg_recall) if (avg_precision + avg_recall) > 0 else 0.0
+    
+    metrics = {
+        'precision': avg_precision,
+        'recall': avg_recall,
+        'f1_score': f1_score
+    }
+    
+    print("Retrieval Metrics:")
+    print(f"  Precision - {metrics['precision']:.3f}")
+    print(f"  Recall    - {metrics['recall']:.3f}")
+    print(f"  F1-Score  - {metrics['f1_score']:.3f}")
+    
+    return metrics
+"""

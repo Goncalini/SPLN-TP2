@@ -66,23 +66,6 @@ def test_model(model, test_data):
     
     return metrics
 
-def save_trained_model(model, model_path = MODEL_DIR):
-    """Save trained model."""
-    checkfoldr(model_path)
-    model.save(model_path)
-    print(f"Modelo guardado em: {model_path}")
-
-def load_trained_model(model_path = MODEL_DIR, transformerr = BASE_MODEL):
-    """Load trained model or base model."""
-    if os.path.exists(model_path):
-        model = SentenceTransformer(model_path)
-        print(f"Using {model_path}")
-    else:
-        print(f"Model not found using previous base model")
-        model = SentenceTransformer(transformerr)
-    
-    return model
-
 
 ################################
 ############# UTILS ###########
@@ -103,6 +86,23 @@ def calc_loss(model):
     result = losses.CosineSimilarityLoss(model)
 
     return result
+
+def save_trained_model(model, model_path = MODEL_DIR):
+    """Save trained model."""
+    checkfoldr(model_path)
+    model.save(model_path)
+    print(f"Modelo guardado em: {model_path}")
+
+def load_trained_model(model_path = MODEL_DIR, transformerr = BASE_MODEL):
+    """Load trained model or base model."""
+    if os.path.exists(model_path):
+        model = SentenceTransformer(model_path)
+        print(f"Using {model_path}")
+    else:
+        print(f"Model not found using previous base model")
+        model = SentenceTransformer(transformerr)
+    
+    return model
 
 ##################################
 ################### MAIN #########
