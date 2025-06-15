@@ -1,3 +1,11 @@
+# Autores
+Autores
+
+- PG55944 Gonçalo Costa
+Costa
+- PG56006 Rodrigo Novo
+- PG56967 José Correia
+
 # Sistema de Recuperação de Informação - TP2 SPLN
 
 Este documento descreve, em detalhe, a implementação de um sistema de Recuperação de Informação baseado em embeddings de sentenças, desenvolvido para o **Trabalho Prático II da unidade curricular de Sistemas de Processamento de Linguagem Natural (SPLN)**, usando dados do RepositoriUM.
