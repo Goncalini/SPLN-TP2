@@ -2,7 +2,6 @@
 Autores
 
 - PG55944 Gonçalo Costa
-Costa
 - PG56006 Rodrigo Novo
 - PG56967 José Correia
 
