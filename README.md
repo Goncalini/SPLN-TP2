@@ -1,5 +1,10 @@
 # SPLN-TP2
 
-Gonçalo Costa, pg55944
-José Correia, pg55967
-Rodrigo Novo, pg56006
+aluno: Gonçalo Costa\
+número: pg55944
+
+aluno: José Correia\
+número: pg55967
+
+aluno: Rodrigo Novo\
+número: pg56006
