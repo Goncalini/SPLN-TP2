@@ -3,7 +3,7 @@ __pycache__/
 *.py[cod]
 *$py.class
 
-models/
+trained_model/
 
 # C extensions
 *.so
